@@ -1,0 +1,89 @@
+﻿@model List<Donation>
+@{
+    ViewData["Title"] = "My Donations";
+}
+
+<div class="container mt-5">
+    <h2>My Donation History</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info mt-4">
+            <h4>No donations yet</h4>
+            <p>You haven't made any donations yet. <a href="@Url.Action("MakeDonation", "Donation")" class="alert-link">Make your first donation</a> to support our relief efforts.</p>
+        </div>
+    }
+    else
+    {
+        <div class="card mt-4">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Payment Method</th>
+                                <th>Status</th>
+                                <th>Anonymous</th>
+                                <th>Transaction ID</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var donation in Model)
+                            {
+                                <tr>
+                                    <td>@donation.DonationDate.ToString("MMM dd, yyyy")</td>
+                                    <td class="fw-bold text-success">R @donation.Amount</td>
+                                    <td>@donation.PaymentMethod</td>
+                                    <td>
+                                        <span class="badge @(donation.Status == "Completed" ? "bg-success" : donation.Status == "Pending" ? "bg-warning" : "bg-danger")">
+                                            @donation.Status
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @if (donation.IsAnonymous)
+                                        {
+                                            <i class="fas fa-check text-success"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="fas fa-times text-muted"></i>
+                                        }
+                                    </td>
+                                    <td><small class="text-muted">@donation.PaymentTransactionID</small></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <h4 class="text-primary">R @Model.Sum(d => d.Amount)</h4>
+                                <p class="text-muted">Total Donated</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <h4 class="text-success">@Model.Count(d => d.Status == "Completed")</h4>
+                                <p class="text-muted">Successful Donations</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-3">
+            <a href="@Url.Action("MakeDonation", "Donation")" class="btn btn-primary">
+                <i class="fas fa-donate"></i> Make Another Donation
+            </a>
+        </div>
+    }
+</div>
+

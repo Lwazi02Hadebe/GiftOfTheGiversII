@@ -1,0 +1,217 @@
+﻿@model List<ReliefProject>
+@{
+    ViewData["Title"] = "Home";
+}
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content text-center">
+            <h1 class="display-3 fw-bold mb-4">Bringing Hope Where It's Needed Most</h1>
+            <p class="lead mb-5 fs-4">Join us in providing immediate relief and long-term support to communities affected by disasters worldwide. Every contribution makes a difference.</p>
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-8">
+                    <div class="card hero-card">
+                        <div class="card-body py-4">
+                            <div class="row text-center">
+                                <div class="col-md-4 mb-3 mb-md-0">
+                                    <div class="stat-number">R @ViewData["TotalDonations"]</div>
+                                    <p class="mb-0 opacity-75">Total Donations Raised</p>
+                                </div>
+                                <div class="col-md-4 mb-3 mb-md-0">
+                                    <div class="stat-number">@Model.Count</div>
+                                    <p class="mb-0 opacity-75">Active Relief Projects</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="stat-number">24/7</div>
+                                    <p class="mb-0 opacity-75">Emergency Response</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <a href="@Url.Action("MakeDonation", "Donation")" class="btn btn-success btn-lg px-5 py-3">
+                        <i class="fas fa-donate me-2"></i>Make a Donation
+                    </a>
+                }
+                else
+                {
+                    <a href="@Url.Action("Register", "Auth")" class="btn btn-success btn-lg px-5 py-3">
+                        <i class="fas fa-user-plus me-2"></i>Join Our Mission
+                    </a>
+                }
+                <a href="@Url.Action("Projects", "Home")" class="btn btn-outline-light btn-lg px-5 py-3">
+                    <i class="fas fa-project-diagram me-2"></i>View Projects
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="display-5 fw-bold gradient-text mb-3">How We Make an Impact</h2>
+                <p class="lead text-muted">Our comprehensive approach ensures that help reaches those who need it most, when they need it most.</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 text-center border-0">
+                    <div class="card-body p-4">
+                        <div class="feature-icon bg-primary bg-gradient text-white rounded-circle mx-auto mb-4" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-bolt fa-2x"></i>
+                        </div>
+                        <h4 class="fw-bold">Rapid Response</h4>
+                        <p class="text-muted">Immediate deployment of emergency teams and supplies within 24 hours of a disaster.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 text-center border-0">
+                    <div class="card-body p-4">
+                        <div class="feature-icon bg-success bg-gradient text-white rounded-circle mx-auto mb-4" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-hand-holding-heart fa-2x"></i>
+                        </div>
+                        <h4 class="fw-bold">Sustainable Aid</h4>
+                        <p class="text-muted">Long-term support focusing on rebuilding communities and restoring livelihoods.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 text-center border-0">
+                    <div class="card-body p-4">
+                        <div class="feature-icon bg-warning bg-gradient text-white rounded-circle mx-auto mb-4" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-shield-alt fa-2x"></i>
+                        </div>
+                        <h4 class="fw-bold">Transparent Process</h4>
+                        <p class="text-muted">Complete visibility into how donations are used with real-time tracking and reports.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Active Projects Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-lg-8">
+                <h2 class="display-5 fw-bold gradient-text">Active Relief Projects</h2>
+                <p class="lead text-muted">Currently supporting communities in critical need of assistance.</p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="@Url.Action("Projects", "Home")" class="btn btn-outline-primary">
+                    View All Projects <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            @foreach (var project in Model.Take(4))
+            {
+                <div class="col-lg-6">
+                    <div class="card h-100 hover-lift">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h5 class="card-title fw-bold">@project.ProjectName</h5>
+                                <span class="badge bg-success">@project.Status</span>
+                            </div>
+
+                            <h6 class="card-subtitle mb-3 text-muted">
+                                <i class="fas fa-map-marker-alt text-primary me-1"></i> @project.Location
+                            </h6>
+
+                            <p class="card-text text-muted mb-4">@project.Description</p>
+
+                            <div class="mb-4">
+                                <h6 class="fw-semibold mb-3">Urgent Needs:</h6>
+                                @foreach (var need in project.ProjectNeeds.Take(2))
+                                {
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <span class="small fw-semibold">@need.Item?.ItemName</span>
+                                            <span class="small text-muted">@need.QuantityFulfilled/@need.QuantityNeeded</span>
+                                        </div>
+                                        <div class="progress" style="height: 8px;">
+                                            @{
+                                                var progress = need.QuantityNeeded > 0 ? (need.QuantityFulfilled / (double)need.QuantityNeeded) * 100 : 0;
+                                            }
+                                            <div class="progress-bar" role="progressbar" style="width: @progress%"></div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar me-1"></i>Started @project.StartDate.ToString("MMM dd, yyyy")
+                                </small>
+                                <a href="@Url.Action("ProjectDetails", "Home", new { id = project.ProjectID })" class="btn btn-primary btn-sm">
+                                    Support Project <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="text-center py-5">
+                <div class="card border-0 bg-light">
+                    <div class="card-body py-5">
+                        <i class="fas fa-inbox fa-4x text-muted mb-4"></i>
+                        <h4 class="text-muted">No Active Projects</h4>
+                        <p class="text-muted mb-4">We're currently preparing for new relief efforts. Check back soon!</p>
+                        <a href="@Url.Action("Projects", "Home")" class="btn btn-primary">View Project Archive</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+<!-- Impact Stats Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-card">
+                    <i class="fas fa-users fa-3x mb-3 opacity-75"></i>
+                    <div class="stat-number">50K+</div>
+                    <p class="mb-0 opacity-75">Lives Impacted</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-card" style="background: linear-gradient(135deg, var(--success), #059669);">
+                    <i class="fas fa-home fa-3x mb-3 opacity-75"></i>
+                    <div class="stat-number">120+</div>
+                    <p class="mb-0 opacity-75">Communities Served</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-card" style="background: linear-gradient(135deg, var(--accent), #eab308);">
+                    <i class="fas fa-truck fa-3x mb-3 opacity-75"></i>
+                    <div class="stat-number">15K+</div>
+                    <p class="mb-0 opacity-75">Supplies Delivered</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="stat-card" style="background: linear-gradient(135deg, var(--danger), #dc2626);">
+                    <i class="fas fa-hand-holding-usd fa-3x mb-3 opacity-75"></i>
+                    <div class="stat-number">98%</div>
+                    <p class="mb-0 opacity-75">Funds to Programs</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

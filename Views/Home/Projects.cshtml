@@ -1,0 +1,120 @@
+﻿@model List<ReliefProject>
+@{
+    ViewData["Title"] = "All Projects";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">All Relief Projects</h2>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search projects..." id="projectSearch">
+                <button class="btn btn-outline-secondary" type="button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <select class="form-select" id="statusFilter">
+                <option value="">All Statuses</option>
+                <option value="Active">Active</option>
+                <option value="Completed">Completed</option>
+                <option value="Planning">Planning</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row" id="projectList">
+        @foreach (var project in Model)
+        {
+            <div class="col-md-6 mb-4" data-status="@project.Status.ToLower()">
+                <div class="card project-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title">@project.ProjectName</h5>
+                            <span class="badge @(project.Status == "Active" ? "bg-success" : project.Status == "Completed" ? "bg-secondary" : "bg-warning")">
+                                @project.Status
+                            </span>
+                        </div>
+
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <i class="fas fa-map-marker-alt"></i> @project.Location
+                        </h6>
+
+                        <p class="card-text">@(project.Description.Length > 150 ? project.Description.Substring(0, 150) + "..." : project.Description)</p>
+
+                        <div class="mb-3">
+                            <small class="text-muted">
+                                <i class="fas fa-calendar"></i> Started: @project.StartDate.ToString("MMM dd, yyyy")
+                            </small>
+                            @if (project.EndDate.HasValue)
+                            {
+                                <small class="text-muted ms-2">
+                                    Ended: @project.EndDate.Value.ToString("MMM dd, yyyy")
+                                </small>
+                            }
+                        </div>
+
+                        <h6>Key Needs:</h6>
+                        <div class="mb-3">
+                            @foreach (var need in project.ProjectNeeds.Take(2))
+                            {
+                                <span class="badge bg-light text-dark me-1 mb-1">
+                                    @need.Item.ItemName
+                                </span>
+                            }
+                            @if (project.ProjectNeeds.Count > 2)
+                            {
+                                <span class="badge bg-light text-dark">
+                                    +@(project.ProjectNeeds.Count - 2) more
+                                </span>
+                            }
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="@Url.Action("ProjectDetails", "Home", new { id = project.ProjectID })" class="btn btn-outline-primary btn-sm">
+                                View Details
+                            </a>
+                            <small class="text-muted">
+                                @project.ProjectNeeds.Sum(pn => pn.QuantityFulfilled)/@project.ProjectNeeds.Sum(pn => pn.QuantityNeeded) items received
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center">
+            <div class="alert alert-info">
+                <h4>No projects available</h4>
+                <p>Check back later for new relief efforts.</p>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('projectSearch').addEventListener('input', filterProjects);
+        document.getElementById('statusFilter').addEventListener('change', filterProjects);
+
+        function filterProjects() {
+            const searchText = document.getElementById('projectSearch').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value.toLowerCase();
+            const projects = document.getElementById('projectList').getElementsByClassName('col-md-6');
+
+            Array.from(projects).forEach(project => {
+                const projectName = project.querySelector('.card-title').textContent.toLowerCase();
+                const projectStatus = project.getAttribute('data-status');
+                const matchesSearch = projectName.includes(searchText);
+                const matchesStatus = !statusFilter || projectStatus === statusFilter;
+
+                project.style.display = (matchesSearch && matchesStatus) ? 'block' : 'none';
+            });
+        }
+    </script>
+}

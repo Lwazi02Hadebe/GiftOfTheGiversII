@@ -1,0 +1,90 @@
+﻿@model List<ReliefProject>
+@{
+    ViewData["Title"] = "Manage Projects";
+}
+
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Project Management</h2>
+        <div>
+            <a href="@Url.Action("CreateProject", "Admin")" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Create New Project
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        @foreach (var project in Model)
+        {
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title">@project.ProjectName</h5>
+                            <span class="badge @(project.Status == "Active" ? "bg-success" : project.Status == "Completed" ? "bg-secondary" : "bg-warning")">
+                                @project.Status
+                            </span>
+                        </div>
+
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <i class="fas fa-map-marker-alt"></i> @project.Location
+                        </h6>
+
+                        <p class="card-text">@project.Description</p>
+
+                        <div class="mb-3">
+                            <small class="text-muted">
+                                <i class="fas fa-calendar"></i> @project.StartDate.ToString("MMM dd, yyyy")
+                                @if (project.EndDate.HasValue)
+                                {
+                                    <text> - @project.EndDate.Value.ToString("MMM dd, yyyy")</text>
+                                }
+                            </small>
+                        </div>
+
+                        <h6>Project Needs:</h6>
+                        @foreach (var need in project.ProjectNeeds.Take(3))
+                        {
+                            <div class="mb-2">
+                                <small>@need.Item.ItemName</small>
+                                <div class="progress" style="height: 8px;">
+                                    @{
+                                        var progress = (need.QuantityFulfilled / (double)need.QuantityNeeded) * 100;
+                                    }
+                                    <div class="progress-bar" role="progressbar" style="width: @progress%"></div>
+                                </div>
+                                <small class="text-muted">@need.QuantityFulfilled/@need.QuantityNeeded @need.Item.Unit</small>
+                            </div>
+                        }
+
+                        <div class="mt-3">
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-outline-primary">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn btn-outline-danger">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                                <a href="@Url.Action("ProjectDetails", "Home", new { id = project.ProjectID })" class="btn btn-outline-info">
+                                    <i class="fas fa-eye"></i> View
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center">
+            <div class="alert alert-info">
+                <h4>No projects created yet</h4>
+                <p>Get started by creating your first relief project.</p>
+                <a href="@Url.Action("CreateProject", "Admin")" class="btn btn-primary">Create Project</a>
+            </div>
+        </div>
+    }
+</div>
+

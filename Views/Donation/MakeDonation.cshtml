@@ -1,0 +1,98 @@
+﻿@{
+    ViewData["Title"] = "Make Donation";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title text-center mb-4">Make a Donation</h3>
+
+                    @if (ViewBag.Success != null)
+                    {
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle"></i> @ViewBag.Success
+                        </div>
+                    }
+
+                    <form method="post">
+                        <div class="mb-3">
+                            <label for="amount" class="form-label">Donation Amount (R)</label>
+                            <input type="number" class="form-control" id="amount" name="amount"
+                                   min="1" step="0.01" required placeholder="Enter amount">
+                            <div class="form-text">Minimum donation: R1.00</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="paymentMethod" class="form-label">Payment Method</label>
+                            <select class="form-select" id="paymentMethod" name="paymentMethod" required>
+                                <option value="">Select payment method</option>
+                                <option value="Credit Card">Credit Card</option>
+                                <option value="PayPal">PayPal</option>
+                                <option value="Bank Transfer">Bank Transfer</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="isAnonymous" name="isAnonymous" value="true">
+                            <label class="form-check-label" for="isAnonymous">
+                                Make this donation anonymous
+                            </label>
+                            <div class="form-text">Your name will not be displayed publicly</div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6><i class="fas fa-shield-alt text-success"></i> Secure Payment</h6>
+                                        <small class="text-muted">All transactions are encrypted and secure</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6><i class="fas fa-receipt text-primary"></i> Tax Deductible</h6>
+                                        <small class="text-muted">Receive receipt for tax purposes</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-donate"></i> Process Donation
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5>How Your Donation Helps</h5>
+                    <div class="row text-center mt-3">
+                        <div class="col-md-4">
+                            <i class="fas fa-tint fa-2x text-primary mb-2"></i>
+                            <h6>Clean Water</h6>
+                            <small>R10 provides clean water for a family for a week</small>
+                        </div>
+                        <div class="col-md-4">
+                            <i class="fas fa-utensils fa-2x text-warning mb-2"></i>
+                            <h6>Food Supplies</h6>
+                            <small>R25 provides emergency food for a family</small>
+                        </div>
+                        <div class="col-md-4">
+                            <i class="fas fa-home fa-2x text-success mb-2"></i>
+                            <h6>Shelter</h6>
+                            <small>R50 provides temporary shelter materials</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

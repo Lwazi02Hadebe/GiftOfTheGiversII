@@ -1,0 +1,108 @@
+﻿@model ReliefProject
+@{
+    ViewData["Title"] = "Project Details";
+}
+
+<div class="container mt-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Home</a></li>
+            <li class="breadcrumb-item"><a href="@Url.Action("Projects", "Home")">Projects</a></li>
+            <li class="breadcrumb-item active">@Model.ProjectName</li>
+        </ol>
+    </nav>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <h2>@Model.ProjectName</h2>
+                    <p class="text-muted">
+                        <i class="fas fa-map-marker-alt"></i> @Model.Location |
+                        <span class="badge bg-success">@Model.Status</span> |
+                        Started: @Model.StartDate.ToString("MMM dd, yyyy")
+                    </p>
+
+                    <p class="lead">@Model.Description</p>
+
+                    <div class="mt-4">
+                        <h5>Project Timeline</h5>
+                        <div class="progress" style="height: 20px;">
+                            @{
+                                var endDate = Model.EndDate ?? DateTime.UtcNow.AddDays(30);
+                                var daysTotal = (endDate - Model.StartDate).TotalDays;
+                                var daysPassed = (DateTime.UtcNow - Model.StartDate).TotalDays;
+                                var progressPercent = Math.Min(100, Math.Max(0, (daysPassed / daysTotal) * 100));
+                            }
+                            <div class="progress-bar" role="progressbar" style="width: @progressPercent%">
+                                @((int)progressPercent)%
+                            </div>
+                        </div>
+                        <small class="text-muted">
+                            @((int)daysPassed) days elapsed of ~@((int)daysTotal) total days
+                        </small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-light">
+                        <div class="card-body text-center">
+                            <h5>Support This Project</h5>
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <a href="@Url.Action("MakeDonation", "Donation")" class="btn btn-primary btn-lg mt-3">
+                                    <i class="fas fa-donate"></i> Donate Now
+                                </a>
+                            }
+                            else
+                            {
+                                <p class="text-muted">Please login to make a donation</p>
+                                <a href="@Url.Action("Login", "Auth")" class="btn btn-outline-primary">
+                                    Login to Donate
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5>Current Needs</h5>
+        </div>
+        <div class="card-body">
+            @if (Model.ProjectNeeds != null && Model.ProjectNeeds.Any())
+            {
+                <div class="row">
+                    @foreach (var need in Model.ProjectNeeds)
+                    {
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6>@need.Item?.ItemName</h6>
+                                    <p class="text-muted small">@need.Item?.Description</p>
+                                    <div class="progress mb-2">
+                                        @{
+                                            var needProgress = need.QuantityNeeded > 0 ? (need.QuantityFulfilled / (double)need.QuantityNeeded) * 100 : 0;
+                                        }
+                                        <div class="progress-bar" role="progressbar" style="width: @needProgress%">
+                                            @need.QuantityFulfilled / @need.QuantityNeeded @need.Item?.Unit
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">
+                                        @((int)needProgress)% fulfilled • Category: @need.Item?.Category
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="text-muted">No specific needs listed for this project.</p>
+            }
+        </div>
+    </div>
+</div>
