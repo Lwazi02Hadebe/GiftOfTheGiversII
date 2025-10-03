@@ -1,4 +1,3 @@
-
 using GiftOfTheGiversII.Models;
 using GiftOfTheGiversII.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -16,6 +15,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Register Services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IDonationService, DonationService>();
+builder.Services.AddScoped<IResourceDonationService, ResourceDonationService>();
+builder.Services.AddScoped<IVolunteerService, VolunteerService>();
 
 // Add Authentication
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -30,11 +31,25 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// Seed the database
+// Seed the database - WITH ERROR HANDLING
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+    // Delete and recreate the database to clear any duplicates
+    context.Database.EnsureDeleted();
     context.Database.EnsureCreated();
+
+    // Optional: Add manual seeding if needed
+    try
+    {
+        // Your manual seeding logic here if any
+    }
+    catch (Exception ex)
+    {
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while seeding the database.");
+    }
 }
 
 // Configure the HTTP request pipeline.

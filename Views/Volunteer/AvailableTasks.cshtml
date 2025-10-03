@@ -1,0 +1,124 @@
+﻿@model List<GiftOfTheGiversII.Models.VolunteerTask>
+@{
+    ViewData["Title"] = "Available Volunteer Tasks";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="mb-0"><i class="fas fa-tasks me-2"></i>Available Volunteer Tasks</h2>
+                </div>
+                <div class="card-body">
+                    @if (Model != null && Model.Count > 0)
+                    {
+                        <div class="row">
+                            @foreach (var task in Model)
+                            {
+                                <div class="col-md-6 mb-4">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h5 class="card-title text-primary">@task.Title</h5>
+                                            <h6 class="card-subtitle mb-2 text-muted">@task.TaskType</h6>
+                                            <p class="card-text">@task.Description</p>
+
+                                            <div class="mb-3">
+                                                <small class="text-muted">
+                                                    <i class="fas fa-map-marker-alt me-1"></i>@task.Location<br>
+                                                    <i class="fas fa-calendar me-1"></i>@task.StartDate.ToString("MMM dd, yyyy hh:mm tt")<br>
+                                                    <i class="fas fa-users me-1"></i>@task.VolunteersAssigned/@task.VolunteersNeeded volunteers
+                                                </small>
+                                            </div>
+
+                                            @if (!string.IsNullOrEmpty(task.Requirements))
+                                            {
+                                                <div class="alert alert-info py-2">
+                                                    <strong>Requirements:</strong> @task.Requirements
+                                                </div>
+                                            }
+
+                                            @if (!string.IsNullOrEmpty(task.SpecialInstructions))
+                                            {
+                                                <div class="alert alert-warning py-2">
+                                                    <strong>Special Instructions:</strong> @task.SpecialInstructions
+                                                </div>
+                                            }
+
+                                            <div class="d-grid">
+                                                @if (task.VolunteersAssigned >= task.VolunteersNeeded)
+                                                {
+                                                    <button class="btn btn-secondary disabled" disabled>
+                                                        <i class="fas fa-users me-1"></i>Task Full
+                                                    </button>
+                                                }
+                                                else
+                                                {
+                                                    <form method="post" asp-action="SignUpForTask" class="d-inline">
+                                                        <input type="hidden" name="taskId" value="@task.TaskID" />
+                                                        <button type="submit" class="btn btn-primary w-100">
+                                                            <i class="fas fa-user-plus me-1"></i>Sign Up for Task
+                                                        </button>
+                                                    </form>
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            <small class="text-muted">
+                                                @if (task.StartDate > DateTime.Now)
+                                                {
+                                                    <span class="text-success">
+                                                        <i class="fas fa-clock me-1"></i>Upcoming
+                                                    </span>
+                                                }
+                                                else if (task.StartDate <= DateTime.Now && task.EndDate >= DateTime.Now)
+                                                {
+                                                    <span class="text-warning">
+                                                        <i class="fas fa-play-circle me-1"></i>Ongoing
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-danger">
+                                                        <i class="fas fa-calendar-times me-1"></i>Past
+                                                    </span>
+                                                }
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-4">
+                            <i class="fas fa-tasks fa-3x text-muted mb-3"></i>
+                            <h4>No Available Tasks</h4>
+                            <p class="text-muted">There are no available volunteer tasks at the moment. Please check back later.</p>
+                            <a asp-action="Dashboard" class="btn btn-primary">Return to Dashboard</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (TempData["Error"] != null)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            alert('@Html.Raw(TempData["Error"])');
+        });
+    </script>
+}
+
+@if (TempData["Success"] != null)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            alert('@Html.Raw(TempData["Success"])');
+        });
+    </script>
+}

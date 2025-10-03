@@ -1,4 +1,5 @@
-﻿using GiftOfTheGiversII.Models;
+﻿
+using GiftOfTheGiversII.Models;
 using GiftOfTheGiversII.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +12,13 @@ namespace GiftOfTheGiversII.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IDonationService _donationService;
+        private readonly IResourceDonationService _resourceDonationService;
 
-        public AdminController(ApplicationDbContext context, IDonationService donationService)
+        public AdminController(ApplicationDbContext context, IDonationService donationService, IResourceDonationService resourceDonationService)
         {
             _context = context;
             _donationService = donationService;
+            _resourceDonationService = resourceDonationService;
         }
 
         public async Task<IActionResult> Dashboard()
@@ -23,8 +26,28 @@ namespace GiftOfTheGiversII.Controllers
             ViewBag.TotalDonations = await _donationService.GetTotalDonationsAsync();
             ViewBag.TotalUsers = await _context.Users.CountAsync();
             ViewBag.ActiveProjects = await _context.ReliefProjects.CountAsync(p => p.Status == "Active");
+            ViewBag.TotalResourcesDonated = await _resourceDonationService.GetTotalResourcesDonatedAsync();
 
             return View();
+        }
+
+        public async Task<IActionResult> ResourceDonations()
+        {
+            var donations = await _resourceDonationService.GetAllResourceDonationsAsync();
+            return View(donations);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateDonationStatus(int donationId, string status)
+        {
+            await _resourceDonationService.UpdateDonationStatusAsync(donationId, status);
+            return RedirectToAction("ResourceDonations");
+        }
+
+        public async Task<IActionResult> DonationCenters()
+        {
+            var centers = await _resourceDonationService.GetDonationCentersAsync();
+            return View(centers);
         }
 
         public async Task<IActionResult> Users()

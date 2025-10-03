@@ -1,0 +1,105 @@
+﻿@model List<GiftOfTheGiversII.Models.DonationCenter>
+@{
+    ViewData["Title"] = "Donation Centers";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="mb-0"><i class="fas fa-map-marker-alt me-2"></i>Donation Centers</h2>
+                </div>
+                <div class="card-body">
+                    <p class="lead">Find our donation centers where you can drop off physical items and resources for disaster relief efforts.</p>
+
+                    @if (Model != null && Model.Any())
+                    {
+                        <div class="row">
+                            @foreach (var center in Model)
+                            {
+                                <div class="col-md-6 mb-4">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h5 class="card-title text-primary">@center.Name</h5>
+                                            <div class="mb-3">
+                                                <p class="mb-1">
+                                                    <i class="fas fa-map-marker-alt text-muted me-2"></i>
+                                                    @center.Address, @center.City, @center.ZipCode
+                                                </p>
+                                                @if (!string.IsNullOrEmpty(center.Phone))
+                                                {
+                                                    <p class="mb-1">
+                                                        <i class="fas fa-phone text-muted me-2"></i>
+                                                        @center.Phone
+                                                    </p>
+                                                }
+                                                @if (!string.IsNullOrEmpty(center.Email))
+                                                {
+                                                    <p class="mb-1">
+                                                        <i class="fas fa-envelope text-muted me-2"></i>
+                                                        @center.Email
+                                                    </p>
+                                                }
+                                                <p class="mb-1">
+                                                    <i class="fas fa-clock text-muted me-2"></i>
+                                                    @center.OperatingHours
+                                                </p>
+                                            </div>
+
+                                            @if (center.AcceptedItems != null && center.AcceptedItems.Any())
+                                            {
+                                                <div class="mt-3">
+                                                    <h6 class="text-dark">Accepted Items:</h6>
+                                                    <div class="d-flex flex-wrap gap-2">
+                                                        @foreach (var item in center.AcceptedItems.Where(ai => ai.IsCurrentlyAccepted))
+                                                        {
+                                                            <span class="badge bg-primary">
+                                                                @item.Item?.ItemName
+                                                            </span>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                        <div class="card-footer bg-transparent">
+                                            <small class="text-muted">
+                                                @if (center.IsActive)
+                                                {
+                                                    <span class="text-success"><i class="fas fa-circle me-1"></i>Currently Accepting Donations</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-danger"><i class="fas fa-circle me-1"></i>Temporarily Closed</span>
+                                                }
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            No donation centers are currently available. Please check back later.
+                        </div>
+                    }
+
+                    <div class="mt-4">
+                        <div class="alert alert-info">
+                            <h6><i class="fas fa-info-circle me-2"></i>Donation Guidelines</h6>
+                            <ul class="mb-0">
+                                <li>Please ensure all items are clean and in good condition</li>
+                                <li>Food items must be non-perishable and within expiry date</li>
+                                <li>Medical supplies should be sealed and unexpired</li>
+                                <li>Contact the center in advance for large donations</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

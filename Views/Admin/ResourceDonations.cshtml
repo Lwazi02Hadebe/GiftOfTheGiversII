@@ -1,0 +1,109 @@
+﻿@model List<ResourceDonation>
+@{
+    ViewData["Title"] = "Resource Donations Management";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0"><i class="fas fa-boxes me-2"></i>Resource Donations</h2>
+                    <span class="badge bg-primary">@Model.Count Total</span>
+                </div>
+                <div class="card-body">
+                    @if (Model != null && Model.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Donor</th>
+                                        <th>Item</th>
+                                        <th>Quantity</th>
+                                        <th>Project</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var donation in Model)
+                                    {
+                                        <tr>
+                                            <td>RD@(donation.ResourceDonationID.ToString("D4"))</td>
+                                            <td>
+                                                @if (donation.IsAnonymous)
+                                                {
+                                                    <span class="text-muted">Anonymous</span>
+                                                }
+                                                else if (donation.User != null)
+                                                {
+                                                    @donation.User.FirstName @donation.User.LastName
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">No User</span>
+                                                }
+                                            </td>
+                                            <td>@donation.Item?.ItemName</td>
+                                            <td>@donation.Quantity</td>
+                                            <td>
+                                                @if (donation.Project != null)
+                                                {
+                                                    @donation.Project.ProjectName
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">General</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @GetStatusBadge(donation.Status)
+                                            </td>
+                                            <td>@donation.DonationDate.ToString("MMM dd, yyyy")</td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <form method="post" asp-action="UpdateDonationStatus" class="d-inline">
+                                                        <input type="hidden" name="donationId" value="@donation.ResourceDonationID" />
+                                                        <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                                                            <option value="Pending" selected="@(donation.Status == "Pending")">Pending</option>
+                                                            <option value="Received" selected="@(donation.Status == "Received")">Received</option>
+                                                            <option value="Distributed" selected="@(donation.Status == "Distributed")">Distributed</option>
+                                                        </select>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-4">
+                            <i class="fas fa-boxes fa-3x text-muted mb-3"></i>
+                            <h4>No Resource Donations</h4>
+                            <p class="text-muted">No resource donations have been made yet.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    public string GetStatusBadge(string status)
+    {
+        return status switch
+        {
+            "Pending" => "<span class='badge bg-warning'><i class='fas fa-clock me-1'></i>Pending</span>",
+            "Received" => "<span class='badge bg-success'><i class='fas fa-check me-1'></i>Received</span>",
+            "Distributed" => "<span class='badge bg-info'><i class='fas fa-truck me-1'></i>Distributed</span>",
+            _ => "<span class='badge bg-secondary'>" + status + "</span>"
+        };
+    }
+}

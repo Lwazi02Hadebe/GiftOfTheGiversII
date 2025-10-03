@@ -1,0 +1,137 @@
+﻿@model GiftOfTheGiversII.Models.Volunteer
+@{
+    ViewData["Title"] = "Volunteer Dashboard";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0"><i class="fas fa-tachometer-alt me-2"></i>Volunteer Dashboard</h2>
+                    <span class="badge @(Model.Status == "Approved" ? "bg-success" : Model.Status == "Pending" ? "bg-warning" : "bg-danger")">
+                        @Model.Status
+                    </span>
+                </div>
+                <div class="card-body">
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle me-2"></i>@TempData["Success"]
+                        </div>
+                    }
+
+                    @{
+                        var myAssignments = ViewBag.MyAssignments as List<GiftOfTheGiversII.Models.VolunteerAssignment> ?? new List<GiftOfTheGiversII.Models.VolunteerAssignment>();
+                        var availableTasks = ViewBag.AvailableTasks as List<GiftOfTheGiversII.Models.VolunteerTask> ?? new List<GiftOfTheGiversII.Models.VolunteerTask>();
+                        var completedCount = myAssignments.Count(a => a.Status == "Completed");
+                        var totalHours = myAssignments.Where(a => a.HoursCompleted.HasValue).Sum(a => a.HoursCompleted.Value);
+                    }
+
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="stat-card text-center">
+                                <div class="stat-number">@myAssignments.Count</div>
+                                <div>My Assignments</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card text-center">
+                                <div class="stat-number">@completedCount</div>
+                                <div>Completed</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card text-center">
+                                <div class="stat-number">@availableTasks.Count</div>
+                                <div>Available Tasks</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card text-center">
+                                <div class="stat-number">@totalHours</div>
+                                <div>Hours Volunteered</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (Model.Status != "Approved")
+                    {
+                        <div class="alert alert-warning">
+                            <h6><i class="fas fa-clock me-2"></i>Application Under Review</h6>
+                            <p class="mb-0">Your volunteer application is currently being reviewed. You'll be able to sign up for tasks once approved.</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0"><i class="fas fa-tasks me-2"></i>Available Tasks</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        @if (availableTasks.Count > 0)
+                                        {
+                                            foreach (var task in availableTasks.Take(3))
+                                            {
+                                                <div class="d-flex justify-content-between align-items-center mb-3 p-2 border rounded">
+                                                    <div>
+                                                        <h6 class="mb-1">@task.Title</h6>
+                                                        <small class="text-muted">@task.StartDate.ToString("MMM dd") - @task.Location</small>
+                                                    </div>
+                                                    <a asp-action="SignUpForTask" asp-route-taskId="@task.TaskID" class="btn btn-primary btn-sm">Sign Up</a>
+                                                </div>
+                                            }
+                                            <div class="text-center mt-2">
+                                                <a asp-action="AvailableTasks" class="btn btn-outline-primary btn-sm">View All Tasks</a>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <p class="text-muted">No available tasks at the moment.</p>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0"><i class="fas fa-clipboard-list me-2"></i>Recent Assignments</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        @if (myAssignments.Count > 0)
+                                        {
+                                            foreach (var assignment in myAssignments.Take(3))
+                                            {
+                                                <div class="mb-3 p-2 border rounded">
+                                                    <h6 class="mb-1">@assignment.Task?.Title</h6>
+                                                    <small class="text-muted">
+                                                        Status:
+                                                        <span class="badge @(assignment.Status == "Completed" ? "bg-success" : assignment.Status == "Assigned" ? "bg-primary" : "bg-warning")">
+                                                            @assignment.Status
+                                                        </span>
+                                                    </small>
+                                                    <br>
+                                                    <small class="text-muted">Assigned: @assignment.AssignmentDate.ToString("MMM dd, yyyy")</small>
+                                                </div>
+                                            }
+                                            <div class="text-center mt-2">
+                                                <a asp-action="MyAssignments" class="btn btn-outline-primary btn-sm">View All Assignments</a>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <p class="text-muted">No assignments yet.</p>
+                                            <a asp-action="AvailableTasks" class="btn btn-primary btn-sm">Find Tasks</a>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

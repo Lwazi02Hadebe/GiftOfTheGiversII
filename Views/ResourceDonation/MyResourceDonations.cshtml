@@ -1,0 +1,93 @@
+﻿@model List<ResourceDonation>
+@{
+    ViewData["Title"] = "My Resource Donations";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="mb-0"><i class="fas fa-box me-2"></i>My Resource Donations</h2>
+                </div>
+                <div class="card-body">
+                    @if (Model != null && Model.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Donation ID</th>
+                                        <th>Item</th>
+                                        <th>Quantity</th>
+                                        <th>Project</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                        <th>Delivery Method</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var donation in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <strong>RD@(donation.ResourceDonationID.ToString("D4"))</strong>
+                                            </td>
+                                            <td>
+                                                @donation.Item?.ItemName
+                                                @if (donation.IsAnonymous)
+                                                {
+                                                    <span class="badge bg-secondary ms-1">Anonymous</span>
+                                                }
+                                            </td>
+                                            <td>@donation.Quantity</td>
+                                            <td>
+                                                @if (donation.Project != null)
+                                                {
+                                                    <span>@donation.Project.ProjectName</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">General</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @GetStatusBadge(donation.Status)
+                                            </td>
+                                            <td>@donation.DonationDate.ToString("MMM dd, yyyy")</td>
+                                            <td>@donation.DeliveryMethod</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-4">
+                            <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                            <h4>No Resource Donations Yet</h4>
+                            <p class="text-muted">You haven't made any resource donations yet.</p>
+                            <a asp-action="MakeResourceDonation" class="btn btn-primary">
+                                <i class="fas fa-box-open me-2"></i>Make Your First Donation
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    public string GetStatusBadge(string status)
+    {
+        return status switch
+        {
+            "Pending" => "<span class='badge bg-warning'>Pending</span>",
+            "Received" => "<span class='badge bg-success'>Received</span>",
+            "Distributed" => "<span class='badge bg-info'>Distributed</span>",
+            _ => "<span class='badge bg-secondary'>" + status + "</span>"
+        };
+    }
+}
