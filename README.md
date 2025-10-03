@@ -1,51 +1,74 @@
-Overview
-Gift of the Givers II is a comprehensive web application built with ASP.NET MVC that facilitates charitable donations, relief project management, and user administration for a non-profit organization.
+🌍 Gift of the Givers II
 
-Features
-🔐 Authentication & Authorization
-User Registration & Login: Secure user registration and authentication system
+A donation and relief management system built with ASP.NET Core MVC, designed to streamline donations, manage relief projects, and provide administrative oversight for humanitarian efforts.
 
-Role-based Access Control: Different access levels for Admin and regular users
+🚀 Features
+🔑 Authentication & User Management
 
-Cookie-based Authentication: Persistent login sessions with proper security measures
+Secure login and registration with cookie-based authentication.
 
-👥 User Management
-User Registration: New users can register with email, password, and personal details
+Role-based authorization (Admin, User).
 
-Auto-login: Users are automatically logged in after registration
+Automatic login after registration for a seamless experience.
 
-Profile Management: Users can view and manage their donation history
+💸 Donations
 
-💰 Donation System
-Make Donations: Authenticated users can make monetary donations
+Users can make secure monetary donations.
 
-Multiple Payment Methods: Support for various payment options
+Support for multiple payment methods.
 
-Anonymous Donations: Option to donate anonymously
+Option to donate anonymously.
 
-Donation History: Users can view their donation history
+Users can view their personal donation history.
 
-Total Donation Tracking: System-wide donation tracking
+🛠️ Admin Dashboard
 
-🎯 Relief Projects Management
-Project Listings: View all active relief projects
+Overview of total donations, active projects, and registered users.
 
-Project Details: Detailed view of each project with specific needs
+Manage users and donations.
 
-Admin Project Creation: Administrators can create new relief projects
+Create, view, and manage relief projects with associated needs and items.
 
-Project Status Tracking: Track active and inactive projects
+🏗️ Project Structure
 
-Project Needs Management: Associate specific items with each project
+Controllers
 
-👨‍💼 Admin Dashboard
-Comprehensive Overview: Total donations, user count, and active projects
+AuthController → Handles login, registration, and logout.
 
-User Management: View and manage all registered users
+DonationController → Manages donation flow and donor history.
 
-Donation Management: Monitor all donations across the platform
+AdminController → Provides tools for administrators to manage users, donations, and projects.
 
-Project Administration: Full CRUD operations for relief projects
+Services
+
+IAuthService → Handles authentication and registration logic.
+
+IDonationService → Handles donation creation and retrieval.
+
+Models
+
+ReliefProject, Donation, User, and related entities.
+
+⚙️ Tech Stack
+
+Backend: ASP.NET Core MVC 7+
+
+Database: Entity Framework Core with SQL Server
+
+Authentication: Cookie-based authentication with claims
+
+Frontend: Razor Views
+
+🖥️ Getting Started
+1️⃣ Prerequisites
+
+.NET 7 SDK
+
+SQL Server (local or remote)
+
+2️⃣ Clone the Repository
+git clone https://github.com/your-repo/GiftOfTheGiversII.git
+cd GiftOfTheGiversII
 
 Technology Stack
 Backend
