@@ -72,3 +72,6 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+// Add this partial class at the bottom of Program.cs
+public partial class Program { }
