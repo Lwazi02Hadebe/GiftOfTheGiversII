@@ -1,5 +1,5 @@
 🌍 Gift of the Givers II
-[![Build Status](https://dev.azure.com/GiftOfGivers12/Disaster%20Alleviation/_apis/build/status%2FLwazi02Hadebe.GiftOfTheGiversII?branchName=master)
+[![Build Status](https://dev.azure.com/GiftOfGivers12/Disaster%20Alleviation/_apis/build/status%2FLwazi02Hadebe.GiftOfTheGiversII?branchName=master)](https://dev.azure.com/GiftOfGivers12/Disaster%20Alleviation/_build/latest?definitionId=3&branchName=master)
 
 A donation and relief management system built with ASP.NET Core MVC, designed to streamline donations, manage relief projects, and provide administrative oversight for humanitarian efforts.
 
